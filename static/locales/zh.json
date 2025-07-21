@@ -1,0 +1,50 @@
+{
+  "title": "局域网文件共享",
+  "desc": "简单、快速、安全的文件共享工具",
+  "uploadCard": {
+    "title": "我要上传",
+    "description": "将文件上传到服务器并获取下载码",
+    "btn": "开始上传"
+  },
+  "downloadCard": {
+    "title": "我要下载",
+    "description": "通过下载码获取共享文件",
+    "btn": "开始下载"
+  },
+  "uploadModal": {
+    "title": "上传文件",
+    "instructions": "将文件拖到下方区域或点击选择文件",
+    "selectFile": "选择文件",
+    "expiryLabel": "有效期(小时):",
+    "times": "下载次数:",
+    "submit": "上传",
+    "success": "上传成功！<br>下载码: <strong>{code}</strong><br>有效期: {expiry}小时",
+    "filename": "文件名: ",
+    "filesize": "大小: ",
+    "p1": "拖放文件到这里或点击选择文件",
+    "fileCode": "下载码"
+  },
+  "downloadModal": {
+    "title": "下载文件",
+    "instructions": "请输入6位下载码",
+    "placeholder": "例如: 123456",
+    "submit": "下载",
+    "invalidCode": "请输入下载码",
+    "notFound": "下载失败: 文件不存在或已过期"
+  },
+  "errors": {
+    "network": "网络错误，请重试",
+    "uploadFailed": "上传失败"
+  },
+  "supportPost": "只支持POST方法",
+  "parseFormError": "无法解析表单数据",
+  "fileNotFound": "无法获取文件",
+  "createFileError": "无法创建文件",
+  "saveFileError": "无法保存文件",
+  "fileUploadSuccess": "文件上传成功",
+  "invalidCode": "无效的下载码",
+  "fileNotExistsOrExpire": "文件不存在或已过期",
+  "fileExpire": "文件已过期",
+  "fileNotTimes": "文件下载次数已耗尽"
+
+}

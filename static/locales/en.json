@@ -1,0 +1,49 @@
+{
+  "title": "LAN File Share",
+  "desc": "Simple, fast and secure file sharing",
+  "uploadCard": {
+    "title": "Upload File",
+    "description": "Upload files to server and get download code",
+    "btn": "Start Upload"
+  },
+  "downloadCard": {
+    "title": "Download File",
+    "description": "Get shared files with download code",
+    "btn": "Start Download"
+  },
+  "uploadModal": {
+    "title": "Upload File",
+    "instructions": "Drag and drop files here or click to select",
+    "selectFile": "Select File",
+    "expiryLabel": "Expiry (hours):",
+    "times": "times:",
+    "submit": "Upload",
+    "success": "Upload successful!<br>Download code: <strong>{code}</strong><br>Expires in: {expiry} hours",
+    "filename": "Filename: ",
+    "filesize": "Size: ",
+    "p1": "Drag File To Here Or Click To Select File",
+    "fileCode": "File Code"
+  },
+  "downloadModal": {
+    "title": "Download File",
+    "instructions": "Please enter 6 download code",
+    "placeholder": "e.g. 123456",
+    "submit": "Download",
+    "invalidCode": "Please enter number",
+    "notFound": "Download failed: File not found or expired"
+  },
+  "errors": {
+    "network": "Network error, please try again",
+    "uploadFailed": "Upload failed"
+  },
+  "supportPost": "just support post",
+  "parseFormError": "parse form error",
+  "fileNotFound": "file NotFound",
+  "createFileError": "create file error",
+  "saveFileError": "save file error",
+  "fileUploadSuccess": "file upload success",
+  "invalidCode": "invalid code",
+  "fileNotExistsOrExpire": "file not exists or expire",
+  "fileExpire": "file expire",
+  "fileNotTimes": "file not times"
+}

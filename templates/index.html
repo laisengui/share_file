@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>局域网文件共享</title>
+    <style>
+        /* 语言选择器样式 */
+        .language-selector {
+            margin-top: 1rem;
+        }
+
+        .lang-btn {
+            background: none;
+            border: 1px solid #ddd;
+            padding: 0.3rem 0.8rem;
+            margin: 0 0.3rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .lang-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+    </style>
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --secondary-color: #34a853;
+            --danger-color: #ea4335;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .action-card h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .action-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+            margin-top: 1rem;
+            width: 15rem;
+        }
+
+        .btn:hover {
+            background: #3367d6;
+        }
+
+        /* 上传和下载的模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        /* 添加动画关键帧 */
+        @keyframes clickEffect {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+            }
+            50% {
+                transform: scale(0.98);
+                box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+            }
+        }
+
+        /* 拖拽上传区域 */
+        .dropzone {
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            padding: 3rem;
+            text-align: center;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+            /* 初始状态 */
+            transform: scale(1);
+        }
+
+        /* 点击时的动画类 */
+        .dropzone.click-animation {
+            animation: clickEffect 0.5s ease-out;
+            font-size: 18px;
+        }
+
+        /* 悬停效果 */
+        .dropzone:hover {
+            border-color: #007bff;
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+
+        .dropzone.active {
+            border-color: var(--primary-color);
+            background-color: rgba(66, 133, 244, 0.05);
+        }
+
+        .dropzone p {
+            margin-bottom: 1rem;
+        }
+
+        .file-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--light-gray);
+            border-radius: 5px;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 5px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin-top: 1rem;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* 下载表单样式 */
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .success {
+            background: rgba(52, 168, 83, 0.1);
+            color: var(--secondary-color);
+            border: 1px solid var(--secondary-color);
+        }
+
+        .error {
+            background: rgba(234, 67, 53, 0.1);
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+        }
+    </style>
+    <style>
+        /* 响应式调整 - 移动设备 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .action-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .action-card {
+                padding: 1.5rem;
+                height: auto;
+                min-height: 200px;
+            }
+
+            .action-card h2 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .action-icon {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+
+            .dropzone {
+                padding: 1.5rem;
+            }
+
+            .btn {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.9rem;
+                width: 15rem;
+            }
+
+            /* 防止手机上的输入框缩放 */
+            input, select, textarea {
+                font-size: 16px;
+            }
+        }
+
+        /* 小屏幕手机特别调整 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.8rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .action-card {
+                padding: 1rem;
+            }
+
+            .modal-content {
+                padding: 1rem;
+            }
+
+            .dropzone {
+                padding: 1rem;
+            }
+
+            /* 语言选择器调整 */
+            .language-selector {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .lang-btn {
+                margin: 0.2rem;
+                padding: 0.2rem 0.6rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1 t="title">局域网文件共享</h1>
+        <p class="subtitle" t="desc">简单、快速、安全的文件共享工具</p>
+    </header>
+
+    <div class="action-grid">
+        <div class="action-card" id="upload-card">
+            <div class="action-icon">📤</div>
+            <h2 t="uploadCard.title">我要上传</h2>
+            <p t="uploadCard.description">将文件上传到服务器并获取下载码</p>
+        </div>
+
+        <div class="action-card" id="download-card">
+            <div class="action-icon">📥</div>
+            <h2 t="downloadCard.title">我要下载</h2>
+            <p t="downloadCard.description">通过下载码获取共享文件</p>
+        </div>
+    </div>
+</div>
+
+<!-- 上传模态框 -->
+<div class="modal" id="upload-modal">
+    <div class="modal-content">
+        <span class="close-btn" id="close-upload">&times;</span>
+        <h2 t="uploadModal.title">上传文件</h2>
+        <p t="uploadModal.instructions">将文件拖到下方区域或点击选择文件</p>
+
+        <form id="upload-form">
+            <div class="dropzone" id="dropzone">
+                <p t="uploadModal.p1">拖放文件到这里或点击选择文件</p>
+                <input type="file" id="file-input" style="display: none;">
+                <button style="display: none;" type="button" t="uploadModal.selectFile" class="btn"
+                        id="select-file-btn">选择文件
+                </button>
+            </div>
+
+            <div class="file-info" id="file-info">
+                <p><span t="uploadModal.filename">文件名: </span><span id="filename"></span></p>
+                <p><span t="uploadModal.filesize">大小: </span><span id="filesize"></span></p>
+            </div>
+
+            <div class="progress-bar" id="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+
+            <label for="expiry" t="uploadModal.expiryLabel">有效期(小时):</label>
+            <input type="number" id="expiry" name="expiry" value="24" min="1">
+
+            <label for="expiry" t="uploadModal.times">下载次数:</label>
+            <input type="number" id="times" name="times" value="1" min="-1">
+            <div style="display: flex;justify-content: center">
+                <button type="submit" t="uploadModal.submit" class="btn" id="submit-btn" disabled>上传文件</button>
+            </div>
+
+
+            <div class="message" id="upload-message"></div>
+            <div class="file-info" id="file-result">
+                <p><span t="uploadModal.fileCode">下载码: </span><span id="file-code"></span></p>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 下载模态框 -->
+<div class="modal" id="download-modal">
+    <div class="modal-content">
+        <span class="close-btn" id="close-download">&times;</span>
+        <h2 t="downloadModal.title">下载文件</h2>
+        <p t="downloadModal.instructions">请输入下载码</p>
+
+        <div class="download-form">
+            <input type="text" id="download-code" t-placeholder="downloadModal.placeholder" placeholder="例如: 123456"
+                   maxlength="6">
+            <div style="display: flex;justify-content: center">
+                <button t="downloadModal.submit" class="btn" id="download-submit">下载文件</button>
+            </div>
+            <div class="message" id="download-message"></div>
+        </div>
+    </div>
+</div>
+<script src="/static/js/i18n.js"></script>
+<script src="/static/js/modal.js"></script>
+<script src="/static/js/upload.js"></script>
+<script src="/static/js/download.js"></script>
+</body>
+</html>
