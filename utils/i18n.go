@@ -1,11 +1,11 @@
 package utils
 
 import (
+	"embed"
 	"encoding/json"
-	"io/ioutil"
+	"io/fs"
 	"log"
 	"net/http"
-	"path/filepath"
 	"strings"
 	"sync"
 )
@@ -16,18 +16,21 @@ var (
 	defaultLang  = "zh"
 )
 
-func init() {
-	loadTranslations()
+//func init() {
+//	loadTranslations()
+//}
+
+func Use(localesFiles *embed.FS) {
+	loadTranslations(localesFiles)
 }
 
-func loadTranslations() {
+func loadTranslations(localesFiles *embed.FS) {
 	localeMutex.Lock()
 	defer localeMutex.Unlock()
 
 	locales := []string{"zh", "en"}
 	for _, lang := range locales {
-		filePath := filepath.Join("static", "locales", lang+".json")
-		data, err := ioutil.ReadFile(filePath)
+		data, err := fs.ReadFile(localesFiles, "static/locales/"+lang+".json")
 		if err != nil {
 			log.Printf("Error loading %s translation: %v", lang, err)
 			continue

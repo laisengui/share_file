@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"flag"
 	"log"
 	"os"
@@ -12,6 +13,7 @@ import (
 
 var (
 	uploadDir       = "./uploads"
+	base            = "/"
 	codeLength      = 6
 	cleanupInterval = 1 * time.Hour
 	defaultExpiry   = 24 * time.Hour
@@ -22,6 +24,9 @@ var (
 
 var database *FileStorage
 var userMap = map[string]string{}
+
+//go:embed static/locales/*
+var localesFiles embed.FS
 
 func main() {
 
@@ -37,6 +42,7 @@ func main() {
 	logFlag := flag.Bool("log", false, "log record to workspace file")
 	login := flag.Int("login_flag", 0, "0:allow all handle,1:upload need login,2: download need login,3:all need login")
 	users := flag.String("users", "", "User info example admin:admin,test:test")
+	baseFlag := flag.String("base", "/", "html static resource base url example nginx need /share/")
 
 	// Parse the flags
 	flag.Parse()
@@ -51,6 +57,7 @@ func main() {
 		return
 	}
 
+	base = *baseFlag
 	codeLength = *codeLen
 	cleanupInterval = *cleanup
 	defaultExpiry = *expiry
@@ -95,8 +102,12 @@ func main() {
 			}
 			os.Stdout = f
 			os.Stderr = f
+			log.SetOutput(f)
 		}
 	}
+
+	//给utils i8n 传递参数
+	utils.Use(&localesFiles)
 
 	//初始化数据库
 	// 打开数据库

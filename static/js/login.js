@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
         formData.append('username', username);
         formData.append('password', password);
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/login');
+        xhr.open('POST', 'login');
         xhr.onload = () => {
             const response = JSON.parse(xhr.responseText);
             if (xhr.status === 200) {
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 退出登录
     document.getElementById('logout-btn').addEventListener('click', function () {
-        fetch('/logout', {
+        fetch('logout', {
             method: 'POST'
         })
             .then(response => response.json())
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // 检查登录状态
 function checkLoginStatus() {
-    fetch('/login/status')
+    fetch('login/status')
         .then(response => response.json())
         .then(data => {
             if (data.loggedIn && data.username) {

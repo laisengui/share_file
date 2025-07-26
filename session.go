@@ -8,6 +8,7 @@ import (
 
 type Session struct {
 	username  string
+	token     string
 	timestamp int64 //过期的时间戳
 }
 
@@ -18,7 +19,7 @@ var session = map[string]*Session{}
 
 func generateSessionToken(username string) string {
 	code := utils.GenerateRandomCode(10)
-	session[code] = &Session{username: username, timestamp: time.Now().Unix() + sessionTime}
+	session[code] = &Session{username: username, token: code, timestamp: time.Now().Unix() + sessionTime}
 	return code
 }
 
@@ -40,9 +41,14 @@ func isLoggedIn(r *http.Request) (bool, *Session) {
 	}
 	now := time.Now().Unix()
 	// 验证令牌
-	if s.username == username && s.timestamp > now {
-		s.timestamp = time.Now().Unix() + sessionTime
-		return true, s
+	if s.username == username {
+		if s.timestamp > now {
+			s.timestamp = time.Now().Unix() + sessionTime
+			return true, s
+		} else {
+			delete(session, token)
+		}
+
 	}
 	return false, nil
 }

@@ -4,23 +4,17 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6587b7cf-c710-42a7-b35b-6dd22e21d225" name="更改" comment="feat:基础功能提交">
-      <change afterPath="$PROJECT_DIR$/build.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/help.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/session.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/login.js" afterDir="false" />
+    <list default="true" id="6587b7cf-c710-42a7-b35b-6dd22e21d225" name="更改" comment="feat:登录会话时间管理 安装脚本">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database.go" beforeDir="false" afterPath="$PROJECT_DIR$/database.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/httpserver.go" beforeDir="false" afterPath="$PROJECT_DIR$/httpserver.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/session.go" beforeDir="false" afterPath="$PROJECT_DIR$/session.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/js/download.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/download.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/i18n.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/i18n.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/login.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/js/upload.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/upload.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/locales/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/locales/en.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/locales/zh.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/locales/zh.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/common_utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/common_utils.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/i18n.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/i18n.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,6 +68,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/static" />
       <recent name="$PROJECT_DIR$/utils" />
       <recent name="$PROJECT_DIR$/templates" />
     </key>
@@ -82,7 +77,7 @@
     <configuration name="share_file" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true">
       <module name="share_file" />
       <working_directory value="$PROJECT_DIR$" />
-      <parameters value="--users admin:admin --login_flag 3 --work_dir $PROJECT_DIR$/target/work" />
+      <parameters value="--users admin:admin --login_flag 1 --work_dir $PROJECT_DIR$/target/work" />
       <kind value="PACKAGE" />
       <package value="share_file" />
       <directory value="$PROJECT_DIR$" />
@@ -121,7 +116,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feat:基础功能提交" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat:基础功能提交" />
+    <MESSAGE value="feat:登录会话时间管理 安装脚本" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat:登录会话时间管理 安装脚本" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

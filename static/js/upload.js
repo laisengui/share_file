@@ -121,7 +121,7 @@ uploadForm.addEventListener('submit', async (e) => {
             }
         });
 
-        xhr.open('POST', '/upload');
+        xhr.open('POST', 'upload');
 
         xhr.onload = () => {
             if (xhr.status === 200) {
