@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/subtle"
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
@@ -17,8 +18,6 @@ import (
 // startHttp 启动http服务
 func startHttp() {
 	// 设置路由
-	http.HandleFunc("/upload", uploadHandler)
-	http.HandleFunc("/download/", downloadHandler)
 	// 设置根路径处理
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/" {
@@ -27,6 +26,12 @@ func startHttp() {
 		}
 		http.NotFound(w, r)
 	})
+	http.HandleFunc("/login/status", loginStatusHandler)
+	http.HandleFunc("/login", loginHandler)
+	http.HandleFunc("/logout", logoutHandler)
+	http.HandleFunc("/upload", uploadHandler)
+	http.HandleFunc("/download/", downloadHandler)
+
 	// 设置静态文件服务
 	fs := http.FileServer(http.Dir("./static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
@@ -44,7 +49,16 @@ func startHttp() {
 
 // uploadHandler 上传文件
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
+
 	lang := utils.DetectLanguage(r)
+
+	if loginFlag == 1 || loginFlag == 3 {
+		if login, _ := isLoggedIn(r); !login {
+			http.Error(w, utils.T(lang, "needLogin"), http.StatusUnauthorized)
+			return
+		}
+	}
+
 	if r.Method != http.MethodPost {
 		http.Error(w, utils.T(lang, "supportPost"), http.StatusMethodNotAllowed)
 		return
@@ -65,6 +79,23 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
+	filedata, err := io.ReadAll(file)
+	if err != nil {
+		http.Error(w, utils.T(lang, "fileReadError"), http.StatusBadRequest)
+		return
+	}
+	hasCompress := false
+	if enableZipFlag {
+		if !utils.IsZip(filedata) {
+			filedata, err = utils.CompressSingleFileToZip("file", filedata)
+			if err != nil {
+				http.Error(w, utils.T(lang, "fileCompressError"), http.StatusBadRequest)
+				return
+			}
+			hasCompress = true
+		}
+	}
+
 	// 获取有效期
 	expiryHours, err := strconv.Atoi(r.FormValue("expiry"))
 	if err != nil || expiryHours <= 0 {
@@ -77,7 +108,15 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 生成随机码
-	code := utils.GenerateRandomCode(codeLength)
+	var code string
+	for {
+		code = utils.GenerateRandomCode(codeLength)
+		_, e := database.GetFile(code)
+		if e != nil {
+			//检测冲突, 报错代表不冲突
+			break
+		}
+	}
 
 	// 创建目标文件
 	id := uuid.New()
@@ -103,6 +142,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		Code:        code,
 		Size:        size,
 		Times:       times,
+		Compression: hasCompress,
 		UploadTime:  time.Now(),
 		ExpiryTime:  time.Now().Add(time.Duration(expiryHours) * time.Hour),
 		ContentType: handler.Header.Get("Content-Type"),
@@ -129,6 +169,13 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 // downloadHandler 下载文件
 func downloadHandler(w http.ResponseWriter, r *http.Request) {
 	lang := utils.DetectLanguage(r)
+
+	if loginFlag == 2 || loginFlag == 3 {
+		if login, _ := isLoggedIn(r); !login {
+			http.Error(w, utils.T(lang, "needLogin"), http.StatusUnauthorized)
+			return
+		}
+	}
 
 	code := r.URL.Path[len("/download/"):]
 	if len(code) != codeLength {
@@ -175,4 +222,82 @@ func downloadHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 提供文件下载
 	http.ServeFile(w, r, filename)
+}
+
+// loginStatusHandler 检查登录状态
+func loginStatusHandler(w http.ResponseWriter, r *http.Request) {
+
+	// 验证令牌
+	login, s := isLoggedIn(r)
+	username := ""
+	if login {
+		username = s.username
+	}
+	// 返回成功响应
+	response := map[string]interface{}{
+		"loggedIn": login,
+		"username": username,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
+// loginHandler 登录处理器
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		// 处理登录请求
+		username := r.FormValue("username")
+		password := r.FormValue("password")
+
+		// 验证用户名和密码
+		storedPassword, ok := userMap[username]
+		if !ok || subtle.ConstantTimeCompare([]byte(password), []byte(storedPassword)) != 1 {
+			http.Error(w, "Invalid username or password", http.StatusUnauthorized)
+			return
+		}
+
+		// 创建Cookie
+		expiration := time.Now().Add(24 * time.Hour)
+		cookie := http.Cookie{
+			Name:     "session",
+			Value:    username + "|" + generateSessionToken(username),
+			Expires:  expiration,
+			HttpOnly: true,
+			Path:     "/",
+		}
+		http.SetCookie(w, &cookie)
+
+		// 返回成功响应
+		response := map[string]interface{}{
+			"username": username,
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+
+		return
+	}
+
+	http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+}
+
+// logoutHandler 登出处理器
+func logoutHandler(w http.ResponseWriter, r *http.Request) {
+	// 删除Cookie
+	cookie := http.Cookie{
+		Name:     "session",
+		Value:    "",
+		Expires:  time.Unix(0, 0),
+		HttpOnly: true,
+		Path:     "/",
+	}
+	http.SetCookie(w, &cookie)
+	// 返回成功响应
+	response := map[string]interface{}{
+		"username": "",
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }

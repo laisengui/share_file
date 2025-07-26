@@ -7,7 +7,7 @@ downloadSubmit.addEventListener('click', () => {
     const code = downloadCode.value.trim();
 
     if ( !/^[0-9a-z]+$/.test(code)) {
-        showMessage(downloadMessage, '请输入下载码', 'error');
+        showMessage('请输入下载码', 'error');
         return;
     }
 
@@ -17,7 +17,7 @@ downloadSubmit.addEventListener('click', () => {
     // 检查下载是否成功
     setTimeout(() => {
         if (!downloadMessage.textContent.includes('成功')) {
-            showMessage(downloadMessage, '下载失败: 文件不存在或已过期', 'error');
+            showMessage( '下载失败: 文件不存在或已过期', 'error');
         }
     }, 2000);
 });
@@ -27,8 +27,8 @@ function resetDownloadForm() {
     downloadMessage.style.display = 'none';
 }
 
-function showMessage(element, message, type) {
-    element.innerHTML = message;
-    element.className = `message ${type}`;
-    element.style.display = 'block';
-}
+// function showMessage(element, message, type) {
+//     element.innerHTML = message;
+//     element.className = `message ${type}`;
+//     element.style.display = 'block';
+// }

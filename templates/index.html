@@ -5,6 +5,178 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>局域网文件共享</title>
     <style>
+        /* 全局消息提示框样式 */
+        .message-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 400px;
+        }
+
+        .message-toast {
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s ease-out;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .message-toast::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .message-toast::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            width: 100%;
+            background: white;
+            animation: progress 3s linear forwards;
+        }
+
+        .message-toast.success {
+            background-color: var(--secondary-color);
+            color:whitesmoke;!important;
+        }
+
+        .message-toast.error {
+            background-color: var(--danger-color);
+            color:whitesmoke;!important;
+        }
+
+        .message-toast.info {
+            background-color: var(--primary-color);
+            color:whitesmoke;
+        }
+
+        .message-toast.warning {
+            background-color: #fbbc05;
+            color:whitesmoke;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes progress {
+            from {
+                width: 100%;
+            }
+            to {
+                width: 0%;
+            }
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .message-container {
+                max-width: 90%;
+                left: 5%;
+                right: 5%;
+            }
+        }
+    </style>
+    <style>
+        /* 新增的登录相关样式 */
+        .login-container {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .login-btn, .logout-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 0.5rem;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn {
+            background: var(--danger-color);
+        }
+
+        .login-btn:hover {
+            background: #3367d6;
+        }
+
+        .logout-btn:hover {
+            background: #d33426;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-right: 0.5rem;
+        }
+
+        .username {
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        /* 登录模态框样式 */
+        .login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 0.5rem 0 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .login-form button {
+            width: 100%;
+        }
+
         /* 语言选择器样式 */
         .language-selector {
             margin-top: 1rem;
@@ -358,6 +530,16 @@
     </style>
 </head>
 <body>
+<div class="login-container" id="login-container" style="display: none;">
+    <div class="user-info">
+        <span class="username" id="username-display"></span>
+    </div>
+    <button class="logout-btn" id="logout-btn" t="logout">退出登录</button>
+</div>
+
+<div class="login-container" id="logout-container">
+    <button class="login-btn" id="login-btn" t="login">登录</button>
+</div>
 <div class="container">
     <header>
         <h1 t="title">局域网文件共享</h1>
@@ -376,6 +558,25 @@
             <h2 t="downloadCard.title">我要下载</h2>
             <p t="downloadCard.description">通过下载码获取共享文件</p>
         </div>
+    </div>
+</div>
+
+<!-- 登录模态框 -->
+<div class="login-modal" id="login-modal">
+    <div class="login-modal-content">
+        <span class="close-btn" id="close-login">&times;</span>
+        <h2 t="loginModal.title">用户登录</h2>
+        <form id="login-form">
+            <label for="username" t="loginModal.username">用户名:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password" t="loginModal.password">密码:</label>
+            <input type="password" id="password" name="password" required>
+
+            <div class="message" id="login-message"></div>
+
+            <button type="submit" t="loginModal.submit" class="btn">登录</button>
+        </form>
     </div>
 </div>
 
@@ -416,7 +617,7 @@
 
             <div class="message" id="upload-message"></div>
             <div class="file-info" id="file-result">
-                <p><span t="uploadModal.fileCode">下载码: </span><span id="file-code"></span></p>
+                <p><span t="uploadModal.fileCode">下载码</span>:<span id="file-code"></span></p>
             </div>
         </form>
     </div>
@@ -439,9 +640,43 @@
         </div>
     </div>
 </div>
+
+<div class="message-container" id="message-container"></div>
 <script src="/static/js/i18n.js"></script>
 <script src="/static/js/modal.js"></script>
 <script src="/static/js/upload.js"></script>
 <script src="/static/js/download.js"></script>
+<script src="/static/js/login.js"></script>
+<script>
+    /**
+     * 显示全局消息提示
+     * @param {string} message 消息内容
+     * @param {string} type 消息类型 (success, error, info, warning)
+     * @param {number} duration 显示时长(毫秒)，默认3000
+     */
+    function showMessage(message, type = 'info', duration = 3000) {
+        const container = document.getElementById('message-container');
+        if (!container) return;
+
+        // 创建消息元素
+        const messageEl = document.createElement('div');
+        messageEl.className = `message-toast ${type}`;
+        messageEl.textContent = message;
+
+        // 添加到容器
+        container.appendChild(messageEl);
+
+        // 设置自动消失
+        setTimeout(() => {
+            messageEl.style.opacity = '0';
+            setTimeout(() => {
+                messageEl.remove();
+            }, 300);
+        }, duration);
+    }
+
+    // 全局挂载到window对象
+    window.showMessage = showMessage;
+</script>
 </body>
 </html>

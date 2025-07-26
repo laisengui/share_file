@@ -4,7 +4,24 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6587b7cf-c710-42a7-b35b-6dd22e21d225" name="更改" comment="feat:基础功能提交" />
+    <list default="true" id="6587b7cf-c710-42a7-b35b-6dd22e21d225" name="更改" comment="feat:基础功能提交">
+      <change afterPath="$PROJECT_DIR$/build.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/help.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/session.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database.go" beforeDir="false" afterPath="$PROJECT_DIR$/database.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/httpserver.go" beforeDir="false" afterPath="$PROJECT_DIR$/httpserver.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/download.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/download.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/upload.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/upload.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/locales/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/locales/en.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/locales/zh.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/locales/zh.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/common_utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/common_utils.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -39,29 +56,33 @@
   &quot;keyToString&quot;: {
     &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
     &quot;Go 构建.go build share_file.executor&quot;: &quot;Debug&quot;,
+    &quot;Go 构建.share_file.executor&quot;: &quot;Debug&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/laisengui&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/laisengui/GolandProjects/share_file&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;
   }
 }</component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/utils" />
       <recent name="$PROJECT_DIR$/templates" />
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="go build share_file" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="share_file" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true">
       <module name="share_file" />
       <working_directory value="$PROJECT_DIR$" />
-      <parameters value="--work_dir $PROJECT_DIR$/target/work" />
+      <parameters value="--users admin:admin --login_flag 3 --work_dir $PROJECT_DIR$/target/work" />
       <kind value="PACKAGE" />
       <package value="share_file" />
       <directory value="$PROJECT_DIR$" />
@@ -71,7 +92,7 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go 构建.go build share_file" />
+        <item itemvalue="Go 构建.share_file" />
       </list>
     </recent_temporary>
   </component>

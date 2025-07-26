@@ -12,11 +12,12 @@ import (
 type FileInfo struct {
 	Uuid        string    `json:"uuid"`
 	Filename    string    `json:"filename"`
-	Code        string    `json:"code"`
+	Code        string    `json:"code"` //下载的唯一编码
 	Size        int64     `json:"size"`
-	Times       int       `json:"times"`
+	Times       int       `json:"times"`       //下载次数
+	Compression bool      `json:"compression"` //是否压缩过
 	UploadTime  time.Time `json:"upload_time"`
-	ExpiryTime  time.Time `json:"expiry_time"`
+	ExpiryTime  time.Time `json:"expiry_time"` //过期时间的时间戳
 	ContentType string    `json:"content_type"`
 }
 

@@ -26,8 +26,8 @@
   },
   "downloadModal": {
     "title": "Download File",
-    "instructions": "Please enter 6 download code",
-    "placeholder": "e.g. 123456",
+    "instructions": "Please enter download code",
+    "placeholder": "e.g. 61dw3g",
     "submit": "Download",
     "invalidCode": "Please enter number",
     "notFound": "Download failed: File not found or expired"
@@ -45,5 +45,6 @@
   "invalidCode": "invalid code",
   "fileNotExistsOrExpire": "file not exists or expire",
   "fileExpire": "file expire",
-  "fileNotTimes": "file not times"
+  "fileNotTimes": "file not times",
+  "needLogin": "handle need login"
 }

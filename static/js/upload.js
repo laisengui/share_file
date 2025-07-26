@@ -88,16 +88,18 @@ function formatFileSize(bytes) {
     if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
     return (bytes / (1024 * 1024 * 1024)).toFixed(1) + ' GB';
 }
-
+let formUpload=false
 uploadForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-
+    if(formUpload){
+        return
+    }
     const file = uploadForm.file;
     const expiry = document.getElementById('expiry').value;
     const times = document.getElementById('times').value;
 
     if (!file) {
-        showMessage(uploadMessage, '请先选择文件', 'error');
+        showMessage('请先选择文件', 'error');
         return;
     }
 
@@ -127,19 +129,20 @@ uploadForm.addEventListener('submit', async (e) => {
                 //showMessage(uploadMessage, t('uploadModal.success', { code: response.code, expiry: expiry }), 'success');
                 showCode(response.code)
             } else {
-                const error = JSON.parse(xhr.responseText);
-                showMessage(uploadMessage, error.message || '上传失败', 'error');
+                showMessage(xhr.responseText|| '上传失败', 'error');
+                formUpload=false
             }
         };
 
         xhr.onerror = () => {
-            showMessage(uploadMessage, '网络错误，请重试', 'error');
+            showMessage('网络错误，请重试', 'error');
+            formUpload=false
         };
-
+        formUpload=true
         xhr.send(formData);
 
     } catch (error) {
-        showMessage(uploadMessage, t('errors.uploadFailed') + ': ' + error.message, 'error');
+        showMessage(t('errors.uploadFailed') + ': ' + error.message, 'error');
         progressBar.style.display = 'none';
     }
 });
@@ -150,6 +153,7 @@ function showCode(code) {
 }
 
 function resetUploadForm() {
+    formUpload=false
     fileInput.value = '';
     fileInfo.style.display = 'none';
     progressBar.style.display = 'none';

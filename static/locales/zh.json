@@ -26,8 +26,8 @@
   },
   "downloadModal": {
     "title": "下载文件",
-    "instructions": "请输入6位下载码",
-    "placeholder": "例如: 123456",
+    "instructions": "请输入下载码",
+    "placeholder": "例如: 61dw3g",
     "submit": "下载",
     "invalidCode": "请输入下载码",
     "notFound": "下载失败: 文件不存在或已过期"
@@ -45,6 +45,6 @@
   "invalidCode": "无效的下载码",
   "fileNotExistsOrExpire": "文件不存在或已过期",
   "fileExpire": "文件已过期",
-  "fileNotTimes": "文件下载次数已耗尽"
-
+  "fileNotTimes": "文件下载次数已耗尽",
+  "needLogin": "操作需要登录"
 }

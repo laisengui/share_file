@@ -74,8 +74,45 @@ func CheckAndCreateDir(filePath string) error {
 	}
 	return nil
 }
+func IsZip(data []byte) bool {
+	if len(data) < 4 {
+		return false
+	}
+	return data[0] == 0x50 && data[1] == 0x4B &&
+		data[2] == 0x03 && data[3] == 0x04
+}
 
-// 内存中解压zip包，返回文件名到内容的映射
+// CompressSingleFileToZip 压缩zip
+func CompressSingleFileToZip(filename string, fileData []byte) ([]byte, error) {
+	// 创建一个内存缓冲区来保存ZIP文件
+	buf := new(bytes.Buffer)
+
+	// 创建一个新的ZIP写入器
+	zipWriter := zip.NewWriter(buf)
+
+	// 在ZIP文件中创建一个新文件
+	fileWriter, err := zipWriter.Create(filename)
+	if err != nil {
+		return nil, fmt.Errorf("无法在ZIP中创建文件: %w", err)
+	}
+
+	// 将文件数据写入ZIP
+	_, err = fileWriter.Write(fileData)
+	if err != nil {
+		return nil, fmt.Errorf("无法写入ZIP文件: %w", err)
+	}
+
+	// 关闭ZIP写入器以确保所有数据都写入缓冲区
+	err = zipWriter.Close()
+	if err != nil {
+		return nil, fmt.Errorf("无法关闭ZIP写入器: %w", err)
+	}
+
+	// 返回ZIP文件的字节数据
+	return buf.Bytes(), nil
+}
+
+// ExtractSingleFileZip 内存中解压zip包，返回文件名到内容的映射
 func ExtractSingleFileZip(zipData []byte) ([]byte, error) {
 	// 创建一个内存中的zip读取器
 	reader := bytes.NewReader(zipData)
