@@ -92,8 +92,9 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 解析表单数据，限制上传大小为100MB
-	err := r.ParseMultipartForm(100 << 20)
+	// 解析表单数据，限制上传大小为1000MB
+	r.Body = http.MaxBytesReader(w, r.Body, maxMbFlag<<20)
+	err := r.ParseMultipartForm(maxMbFlag << 20)
 	if err != nil {
 		log.Printf("上传异常 %v", err)
 		http.Error(w, utils.T(lang, "parseFormError"), http.StatusBadRequest)

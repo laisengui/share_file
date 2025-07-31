@@ -12,14 +12,15 @@ import (
 )
 
 var (
-	uploadDir       = "./uploads"
-	base            = "/"
-	codeLength      = 6
-	cleanupInterval = 1 * time.Hour
-	defaultExpiry   = 24 * time.Hour
-	port            = 8080
-	enableZipFlag   = false
-	loginFlag       = 0
+	uploadDir             = "./uploads"
+	base                  = "/"
+	codeLength            = 6
+	cleanupInterval       = 1 * time.Hour
+	defaultExpiry         = 24 * time.Hour
+	port                  = 8080
+	enableZipFlag         = false
+	loginFlag             = 0
+	maxMbFlag       int64 = 1000
 )
 
 var database *FileStorage
@@ -37,6 +38,7 @@ func main() {
 	codeLen := flag.Int("code_len", 6, "Length of the generated access codes")
 	cleanup := flag.Duration("cleanup_interval", 24*time.Hour, "Interval for cleaning up expired files")
 	expiry := flag.Duration("default_expiry", 24*time.Hour, "Default expiry time for uploads")
+	maxMb := flag.Int64("max", 1000, "Default sizeMb  for uploads")
 	portFlag := flag.Int("port", 8080, "Port to run the server on")
 	enableZip := flag.Bool("enable_zip", false, "Enable zip compression")
 	logFlag := flag.Bool("log", false, "log record to workspace file")
@@ -64,6 +66,7 @@ func main() {
 	port = *portFlag
 	enableZipFlag = *enableZip
 	loginFlag = *login
+	maxMbFlag = *maxMb
 	if *users != "" {
 		// 首先按逗号分割字符串
 		pairs := strings.Split(*users, ",")
